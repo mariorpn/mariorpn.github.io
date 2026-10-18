@@ -1,0 +1,29 @@
+baseURL: https://mariorpn.com.br/
+theme: blowfish
+title: Mario Neto
+defaultContentLanguage: pt-br
+defaultContentLanguageInSubdir: false
+enableRobotsTXT: true
+outputs:
+  home: [HTML, RSS, JSON]
+pagination:
+  pagerSize: 20
+
+summaryLength: 0
+buildDrafts: false
+buildFuture: false
+enableEmoji: true
+# googleAnalytics = "G-XXXXXXXXX"
+imaging:
+  anchor: 'Center'
+taxonomies:
+  tag: "tags"
+  category: "categories"
+  author: "authors"
+  series: "series"
+
+sitemap:
+  changefreq: 'daily'
+  filename: 'sitemap.xml'
+  priority: 0.5
+
