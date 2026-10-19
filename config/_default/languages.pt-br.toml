@@ -2,7 +2,7 @@ disabled = false
 locale = "pt-BR"
 label = "Português"
 weight = 1
-title = "Mario Neto | 🏠"
+title = "Mario Neto"
 
 [params]
   displayName = "PT-BR"
