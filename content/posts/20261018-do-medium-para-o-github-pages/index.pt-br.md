@@ -9,7 +9,7 @@ tags: ["medium", "github pages", "hugo", "markdown", "python"]
 
 Quando decidi montar meu próprio site no GitHub Pages, eu já tinha alguns artigos publicados no Medium. Copiar e colar cada um à mão estava fora de cogitação: bloco de código perde a formatação, imagem fica para trás e sempre escapa algum detalhe. Eu queria trazer tudo de uma vez, em Markdown limpo e com o mínimo de retrabalho.
 
-Neste artigo mostro o caminho que usei: o export oficial do Medium e um pequeno script Python, o **medium2md**, que transforma esse export em posts prontos para **Hugo** ou **Jekyll**.
+Neste artigo mostro o caminho que usei: o export oficial do Medium e um pequeno script Python, o **medium-export2md**, que transforma esse export em posts prontos para **Hugo** ou **Jekyll**.
 
 ## Por que ter seus textos fora do Medium?
 
@@ -62,9 +62,9 @@ Dá para abrir os arquivos no navegador, mas passar um conversor genérico de HT
 
 Resolver isso post a post é exatamente o tipo de trabalho repetitivo que vale automatizar.
 
-## Passo 2: conheça o medium2md
+## Passo 2: conheça o medium-export2md
 
-O **medium2md** é um script de um arquivo só, que usa apenas a biblioteca padrão do Python. Basta ter Python 3.9 ou mais novo, que já vem na maioria das distribuições Linux e no macOS. Ele:
+O **medium-export2md** é um script de um arquivo só, que usa apenas a biblioteca padrão do Python. Basta ter Python 3.9 ou mais novo, que já vem na maioria das distribuições Linux e no macOS. Ele:
 
 - lê o zip direto, sem precisar descompactar, e pega só os seus posts, ignorando os comentários;
 - gera um Markdown por post com front matter (data, slug, título, descrição e tags);
@@ -78,8 +78,8 @@ O **medium2md** é um script de um arquivo só, que usa apenas a biblioteca padr
 Para baixar:
 
 ```bash
-git clone https://github.com/mariorpn/medium2md.git
-cd medium2md
+git clone https://github.com/mariorpn/medium-export2md.git
+cd medium-export2md
 ```
 
 ## Passo 3: converta
@@ -87,13 +87,13 @@ cd medium2md
 Comece sempre com `--dry-run`, que mostra o que seria gravado sem tocar em nada:
 
 ```bash
-python3 medium2md.py ~/Downloads/medium-export.zip -o ~/meu-site --dry-run
+python3 medium-export2md.py ~/Downloads/medium-export.zip -o ~/meu-site --dry-run
 ```
 
 Estando tudo certo, é só rodar de verdade. Este é o comando que usei no meu site, que é um Hugo bilíngue (português como idioma padrão, mais o inglês):
 
 ```bash
-python3 medium2md.py ~/Downloads/medium-export.zip -o ~/mariorpn.github.io \
+python3 medium-export2md.py ~/Downloads/medium-export.zip -o ~/mariorpn.github.io \
   --lang-codes pt=pt-br,en=en \
   --tz America/Sao_Paulo \
   --include-drafts \
@@ -160,7 +160,7 @@ O resultado no site, com o tema Blowfish:
 O Jekyll é o gerador padrão do GitHub Pages, e o script também atende:
 
 ```bash
-python3 medium2md.py ~/Downloads/medium-export.zip -o ~/meu-site-jekyll --format jekyll
+python3 medium-export2md.py ~/Downloads/medium-export.zip -o ~/meu-site-jekyll --format jekyll
 ```
 
 Os posts vão para `_posts/AAAA-MM-DD-slug.md`, os rascunhos para `_drafts/` e as imagens para `assets/images/posts/`. O suporte a Jekyll ainda é beta: a saída segue a sintaxe do kramdown, mas foi bem menos testada que a do Hugo.
@@ -203,4 +203,4 @@ No meu caso, um workflow do GitHub Actions faz o build do Hugo e publica no GitH
 
 Com o export oficial e um script, a migração que parecia trabalhosa virou um comando. O resultado é Markdown limpo, versionado no Git e publicado no seu domínio. A partir daí, cada post novo é só mais um arquivo no repositório.
 
-O medium2md está no [GitHub](https://github.com/mariorpn/medium2md). Se você usar e encontrar algum caso que ele não trata bem, abre uma issue por lá!
+O medium-export2md está no [GitHub](https://github.com/mariorpn/medium-export2md). Se você usar e encontrar algum caso que ele não trata bem, abre uma issue por lá!

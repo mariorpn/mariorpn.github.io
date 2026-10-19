@@ -9,7 +9,7 @@ tags: ["medium", "github pages", "hugo", "markdown", "python"]
 
 When I decided to build my own site on GitHub Pages, I already had a few articles published on Medium. Copying and pasting each one by hand was out of the question: code blocks lose their formatting, images get left behind and some detail always slips through. I wanted to bring everything over at once, as clean Markdown and with as little rework as possible.
 
-In this article I show the path I took: Medium's official export and a small Python script, **medium2md**, that turns that export into posts ready for **Hugo** or **Jekyll**.
+In this article I show the path I took: Medium's official export and a small Python script, **medium-export2md**, that turns that export into posts ready for **Hugo** or **Jekyll**.
 
 ## Why keep your writing outside Medium?
 
@@ -62,9 +62,9 @@ You can open the files in a browser, but running a generic HTML-to-Markdown conv
 
 Fixing this post by post is exactly the kind of repetitive work worth automating.
 
-## Step 2: meet medium2md
+## Step 2: meet medium-export2md
 
-**medium2md** is a single-file script that only uses Python's standard library. All you need is Python 3.9 or newer, which already ships with most Linux distributions and with macOS. It:
+**medium-export2md** is a single-file script that only uses Python's standard library. All you need is Python 3.9 or newer, which already ships with most Linux distributions and with macOS. It:
 
 - reads the zip directly, no need to extract it, and picks only your posts, skipping the comments;
 - writes one Markdown file per post with front matter (date, slug, title, description and tags);
@@ -78,8 +78,8 @@ Fixing this post by post is exactly the kind of repetitive work worth automating
 To get it:
 
 ```bash
-git clone https://github.com/mariorpn/medium2md.git
-cd medium2md
+git clone https://github.com/mariorpn/medium-export2md.git
+cd medium-export2md
 ```
 
 ## Step 3: convert
@@ -87,13 +87,13 @@ cd medium2md
 Always start with `--dry-run`, which shows what would be written without touching anything:
 
 ```bash
-python3 medium2md.py ~/Downloads/medium-export.zip -o ~/my-site --dry-run
+python3 medium-export2md.py ~/Downloads/medium-export.zip -o ~/my-site --dry-run
 ```
 
 If everything looks right, run it for real. This is the command I used for my site, which is a bilingual Hugo site (Portuguese as the default language, plus English):
 
 ```bash
-python3 medium2md.py ~/Downloads/medium-export.zip -o ~/mariorpn.github.io \
+python3 medium-export2md.py ~/Downloads/medium-export.zip -o ~/mariorpn.github.io \
   --lang-codes pt=pt-br,en=en \
   --tz America/Sao_Paulo \
   --include-drafts \
@@ -160,7 +160,7 @@ The result on the site, with the Blowfish theme:
 Jekyll is GitHub Pages' default generator, and the script supports it too:
 
 ```bash
-python3 medium2md.py ~/Downloads/medium-export.zip -o ~/my-jekyll-site --format jekyll
+python3 medium-export2md.py ~/Downloads/medium-export.zip -o ~/my-jekyll-site --format jekyll
 ```
 
 Posts go to `_posts/YYYY-MM-DD-slug.md`, drafts to `_drafts/` and images to `assets/images/posts/`. Jekyll support is still in beta: the output follows kramdown syntax, but it has been tested much less than the Hugo output.
@@ -203,4 +203,4 @@ In my case, a GitHub Actions workflow builds the Hugo site and publishes it to G
 
 With the official export and a script, a migration that looked like a lot of work became a single command. The result is clean Markdown, versioned in Git and published on your own domain. From then on, every new post is just another file in the repository.
 
-medium2md is on [GitHub](https://github.com/mariorpn/medium2md). If you use it and find a case it doesn't handle well, open an issue there!
+medium-export2md is on [GitHub](https://github.com/mariorpn/medium-export2md). If you use it and find a case it doesn't handle well, open an issue there!
