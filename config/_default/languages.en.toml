@@ -2,7 +2,7 @@ disabled = false
 locale = "en"
 label = "English"
 weight = 2
-title = "Mario Neto | 🏠"
+title = "Mario Neto"
 
 [params]
   displayName = "EN"
