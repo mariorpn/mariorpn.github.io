@@ -1,6 +1,6 @@
 ---
 date: '2026-10-18T22:00:00-03:00'
-draft: true
+draft: false
 slug: "from-medium-to-github-pages"
 title: "From Medium to GitHub Pages: bringing your posts over without the headache"
 description: "Medium already hands you all your stories in a zip file. With a single-file Python script, they become Markdown ready for Hugo or Jekyll, images included."
