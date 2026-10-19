@@ -1,6 +1,6 @@
 ---
 date: '2026-10-18T22:00:00-03:00'
-draft: true
+draft: false
 slug: "do-medium-para-o-github-pages"
 title: "Do Medium para o GitHub Pages: como trazer seus posts sem dor de cabeça"
 description: "O Medium já entrega todos os seus textos num zip. Com um script Python de um arquivo só, eles viram Markdown pronto para Hugo ou Jekyll, com imagens e tudo."
