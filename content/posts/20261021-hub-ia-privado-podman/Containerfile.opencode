@@ -1,0 +1,9 @@
+# Imagem oficial do OpenCode + git (a imagem original nao traz git; o rg ja vem nela).
+# Fixe a versao com --build-arg OPENCODE_TAG=<versao> (o run-opencode.sh faz isso).
+ARG OPENCODE_TAG=latest
+FROM ghcr.io/anomalyco/opencode:${OPENCODE_TAG}
+
+RUN apk add --no-cache git \
+    && git config --system --add safe.directory /workspace
+
+WORKDIR /workspace

@@ -1,0 +1,73 @@
+# Hub de LLMs para Podman rootless: Ollama (Vulkan) + Open WebUI
+# O OpenCode roda separado, pelo script run-opencode.sh
+#
+# Nao precisa do ROCm no host, so do driver Mesa/amdgpu padrao.
+#
+# Pre-requisitos (uma vez):
+#   sudo usermod -aG render,video $USER      # depois saia e entre na sessao
+#   sudo setsebool -P container_use_devices on   # so se o SELinux estiver ativo
+#
+# Subir:           podman compose -f compose.vulkan.yml up -d
+#                  (ou: podman-compose -f compose.vulkan.yml up -d)
+# Baixar modelo:   podman exec -it ollama ollama pull qwen3:14b
+# Verificar GPU:   podman logs ollama 2>&1 | grep -i -E "vulkan|gpu"
+#                  podman exec ollama ollama ps   (PROCESSOR deve mostrar GPU)
+#
+# Use apenas UM dos arquivos (rocm ou vulkan) por vez. Os volumes sao os mesmos.
+# Se a GPU nao for detectada, adicione tambem "- /dev/kfd:/dev/kfd" em devices
+# (e o exemplo oficial do Ollama para Vulkan em AMD).
+# Observacao: "restart: unless-stopped" so vale apos reboot se voce habilitar
+#   systemctl --user enable --now podman-restart.service
+#   loginctl enable-linger $USER
+
+name: hub-llm
+
+services:
+  ollama:
+    image: docker.io/ollama/ollama       # o Vulkan ja vem na imagem padrao
+    container_name: ollama
+    restart: unless-stopped
+    devices:
+      - /dev/dri:/dev/dri
+    group_add:
+      - keep-groups                      # NAO use "video"/"render" no rootless
+    # Se o SELinux bloquear o acesso aos dispositivos e voce nao quiser mexer no
+    # booleano container_use_devices, descomente (enfraquece o isolamento):
+    # security_opt:
+    #   - label=disable
+    environment:
+      - OLLAMA_VULKAN=1
+      - OLLAMA_CONTEXT_LENGTH=32768      # reduza se faltar VRAM
+      - OLLAMA_FLASH_ATTENTION=1
+      - OLLAMA_KV_CACHE_TYPE=q8_0        # cache KV menor, exige flash attention
+      - OLLAMA_KEEP_ALIVE=10m
+    volumes:
+      - ollama:/root/.ollama
+    networks: [backend, egress]          # egress so para baixar modelos
+
+  openwebui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: openwebui
+    restart: unless-stopped
+    depends_on:
+      - ollama
+    ports:
+      - "127.0.0.1:3000:8080"            # somente local
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11434
+      # Deixe true no primeiro acesso (cria o admin). Depois: export ENABLE_SIGNUP=false
+      - ENABLE_SIGNUP=${ENABLE_SIGNUP:-true}
+    volumes:
+      - openwebui:/app/backend/data
+    networks: [backend, egress]
+
+networks:
+  backend:
+    name: hub-llm-backend                # nome fixo: o run-opencode.sh usa este
+    internal: true                       # sem saida para a internet
+  egress:
+    name: hub-llm-egress
+
+volumes:
+  ollama:
+  openwebui:
